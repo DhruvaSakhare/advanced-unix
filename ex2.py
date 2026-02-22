@@ -1,3 +1,6 @@
+import heapq
+
+
 def sliding_weighted_score(numbers, B=1.5, E=0.5):
     """
     B = beginning weight
@@ -55,7 +58,7 @@ def main():
         translation_map
     )
 
-    results = []
+    heap = []
 
     with open("scores.txt") as f:
         for line in f:
@@ -68,15 +71,15 @@ def main():
                 continue
 
             scores = [float(x) for x in parts[1:]]
-
             score = combined_score(scores)
 
-            results.append((score, line.strip()))
+            if len(heap) < 10:
+                heapq.heappush(heap, (score, line.strip()))
+            else:
+                heapq.heappushpop(heap, (score, line.strip()))
 
-    # Sort high → low
-    results.sort(reverse=True, key=lambda x: x[0])
-
-    top10 = results[:10]
+    # Sort final 10 high → low
+    top10 = sorted(heap, reverse=True)
 
     with open("scoresextreme.txt", "w") as out:
         for _, line in top10:
