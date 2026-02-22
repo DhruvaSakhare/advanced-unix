@@ -2,19 +2,58 @@ def combined_score(numbers):
     return sum(numbers)
 
 
+def load_translation(filename):
+    mapping = {}
+
+    with open(filename) as f:
+        for line in f:
+            parts = line.strip().split("\t")
+            if len(parts) >= 2:
+                accession = parts[0]
+                swissprot = parts[1]
+                mapping[swissprot] = accession
+
+    return mapping
+
+
+def load_banned_accessions(negative_file, translation_map):
+    banned_accessions = set()
+
+    with open(negative_file) as f:
+        for line in f:
+            swissprot_id = line.strip()
+
+            if swissprot_id in translation_map:
+                banned_accessions.add(translation_map[swissprot_id])
+
+    return banned_accessions
+
+
 def main():
+    translation_map = load_translation("translation.txt")
+    banned_accessions = load_banned_accessions(
+        "negative_list.txt",
+        translation_map
+    )
+
     results = []
 
     with open("scores.txt") as f:
         for line in f:
             parts = line.strip().split("\t")
+
             accession = parts[0]
+
+            # Skip banned genes
+            if accession in banned_accessions:
+                continue
+
             scores = list(map(float, parts[1:]))
 
             score = combined_score(scores)
             results.append((score, line.strip()))
 
-    # Sort by score descending
+    # Sort high → low
     results.sort(reverse=True, key=lambda x: x[0])
 
     top10 = results[:10]
