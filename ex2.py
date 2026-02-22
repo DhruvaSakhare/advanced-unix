@@ -18,6 +18,8 @@ def sliding_weighted_score(numbers, B=1.5, E=0.5):
 
     return total
 
+def combined_score(numbers):
+    return sum(numbers)
 
 def load_translation(filename):
     mapping = {}
@@ -67,7 +69,7 @@ def main():
 
             scores = [float(x) for x in parts[1:]]
 
-            score = sliding_weighted_score(scores)
+            score = combined_score(scores)
 
             results.append((score, line.strip()))
 
@@ -75,12 +77,9 @@ def main():
     results.sort(reverse=True, key=lambda x: x[0])
 
     top10 = results[:10]
-    bottom10 = results[-10:]
-
-    final = top10 + bottom10
 
     with open("scoresextreme.txt", "w") as out:
-        for _, line in final:
+        for _, line in top10:
             out.write(line + "\n")
 
 
