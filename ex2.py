@@ -1,5 +1,18 @@
-def average_score(numbers):
-    return sum(numbers) / len(numbers)
+def weighted_combined_score(numbers):
+    total = 0
+    n = len(numbers)
+
+    for i, value in enumerate(numbers):
+        if i == 0:
+            weight = 1.5          
+        elif i == n - 1:
+            weight = 0.5          
+        else:
+            weight = 1.0          
+
+        total += value * weight
+
+    return total
 
 
 def load_translation(filename):
@@ -48,10 +61,9 @@ def main():
             if accession in banned_accessions:
                 continue
 
-            scores = list(map(float, parts[1:]))
+            scores = [float(x) for x in parts[1:]]
 
-            # 🔹 CHANGED HERE
-            score = average_score(scores)
+            score = weighted_combined_score(scores)
 
             results.append((score, line.strip()))
 
