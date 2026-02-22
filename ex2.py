@@ -1,14 +1,18 @@
-def weighted_combined_score(numbers):
+def sliding_weighted_score(numbers, B=1.5, E=0.5):
+    """
+    B = beginning weight
+    E = ending weight
+    """
     total = 0
-    n = len(numbers)
+    N = len(numbers)
 
     for i, value in enumerate(numbers):
-        if i == 0:
-            weight = 1.5          
-        elif i == n - 1:
-            weight = 0.5          
+        P = i + 1  # position (1-based index)
+
+        if N == 1:
+            weight = 1.0  # avoid division by zero
         else:
-            weight = 1.0          
+            weight = B - (B - E) * (P - 1) / (N - 1)
 
         total += value * weight
 
@@ -63,7 +67,7 @@ def main():
 
             scores = [float(x) for x in parts[1:]]
 
-            score = weighted_combined_score(scores)
+            score = sliding_weighted_score(scores)
 
             results.append((score, line.strip()))
 
