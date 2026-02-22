@@ -1,5 +1,5 @@
-def combined_score(numbers):
-    return sum(numbers)
+def average_score(numbers):
+    return sum(numbers) / len(numbers)
 
 
 def load_translation(filename):
@@ -47,11 +47,12 @@ def main():
             # Skip banned genes
             if accession in banned_accessions:
                 continue
-            
-            # Works for any number of scores
+
             scores = list(map(float, parts[1:]))
 
-            score = combined_score(scores)
+            # 🔹 CHANGED HERE
+            score = average_score(scores)
+
             results.append((score, line.strip()))
 
     # Sort high → low
